@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinancialApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231220164129_ExpensesAndCat")]
-    partial class ExpensesAndCat
+    [Migration("20240106122910_NewForeignKey")]
+    partial class NewForeignKey
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -120,6 +120,10 @@ namespace FinancialApp.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Person")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

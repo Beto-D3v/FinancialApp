@@ -1,0 +1,71 @@
+﻿@page "/expenses/create"
+@inject ApplicationDbContext Context
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<h1>Criar Gastos</h1>
+
+<EditForm Model="@Model" OnValidSubmit="OnValidationFormAsync">
+
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="w-50">
+        <label class="form-label">Nome do gasto</label>
+        <InputText @bind-Value="Model.Name" class="form-control"/>
+        <ValidationMessage For="@(() => Model.Name)" />
+    </div>
+
+    <div class="w-50">
+        <label class="form-label">Responsável</label>
+        <InputText @bind-Value="Model.Person" class="form-control"/>
+        <ValidationMessage For="@(() => Model.Person)" />
+    </div>
+
+    <div class="w-50">
+        <label class="form-label">Data</label>
+        <InputDate @bind-Value="Model.Date" class="form-control"/>
+        <ValidationMessage For="@(() => Model.Date)" />
+    </div>
+
+    <div class="w-50">
+        <label class="form-label">Valor</label>
+        <InputNumber @bind-Value="Model.Value" class="form-control"/>
+        <ValidationMessage For="@(() => Model.Value)" />
+    </div>
+
+
+    <div class="mb-3">
+        <label class="form-label">Categoria</label>
+        <InputSelect @bind-Value="Model.CategoryId">
+            @foreach (var category in Categories)
+            {
+                <option value="@category.Id">@category.Title</option>
+            }
+        </InputSelect>
+
+    </div>
+
+    <button type="submit" class="btn btn-primary">Criar Novo Gasto</button>
+    <a href="/expenses">Cancelar</a>
+
+</EditForm>
+
+@code {
+    public Expense Model { get; set; } = new();
+    public IEnumerable<Category>? Categories { get; set; } = Enumerable.Empty<Category>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Categories = await Context.Categories.AsNoTracking().OrderBy(x => x.Title).ToListAsync();
+
+    }
+
+    public async Task OnValidationFormAsync()
+    {
+        await Context.Expenses.AddAsync(Model);
+        await Context.SaveChangesAsync();
+        Navigation.NavigateTo(uri: "expenses");
+    }
+
+}

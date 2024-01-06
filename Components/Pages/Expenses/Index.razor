@@ -1,0 +1,81 @@
+﻿@page "/expenses"
+@inject NavigationManager Navigation
+@inject ApplicationDbContext Context
+@rendermode InteractiveServer
+
+<h1>Gastos</h1>
+
+<a class="btn btn-primary" href="/expenses/create">Criar gasto</a>
+
+
+@if (Model == null)
+{
+    <p>
+        <em>Não existem gastos para serem mostrados</em>
+    </p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Categoria</th>
+                <th>Responsável</th>
+                <th>Nome</th>
+                <th>Data</th>
+                <th>Valor</th>
+                <th>Detalhes</th>
+                <th>Editar</th>
+                <th>Deletar</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach(var expense in Model)
+            {
+                <tr>
+                    <td>@expense.Category.Title</td>
+                    <td>@expense.Person</td>
+                    <td>@expense.Name</td>
+                    <td>@expense.Date</td>
+                    <td>@expense.Value.ToString("C", new CultureInfo("pt-BR"))</td>
+                    <td><a class="btn btn-primary" href="/expenses/details/@expense.Id">Detalhes</a></td>
+                    <td><a class="btn btn-primary" href="/categories/edit/@expense.Id">Editar</a></td>
+                    <td>
+                        <button class="btn btn-danger" @onclick="@(async() => await DeleteExpense(expense.Id))">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+
+    public IEnumerable<Expense>? Model { get; set; }
+    public Expense? Expense { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = await Context.Expenses.AsNoTracking().Include(x => x.Category).ToListAsync();
+    }
+
+    public async Task DeleteExpense(Guid id)
+    {
+        Expense = await Context.Expenses.FirstOrDefaultAsync(e => e.Id == id);
+
+        if (Expense == null)
+        {
+            throw new Exception("Gasto não encontrado!");
+        }
+        else
+        {
+            Context.Expenses.Remove(Expense);
+            await Context.SaveChangesAsync();
+            await OnInitializedAsync();
+        }
+
+    }
+
+}

@@ -12,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinancialApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240105105557_FirstMigration")]
+    partial class FirstMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -273,7 +275,7 @@ namespace FinancialApp.Migrations
                     b.HasOne("FinancialApp.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
-                        .OnDelete((DeleteBehavior)ReferentialAction.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
@@ -284,7 +286,7 @@ namespace FinancialApp.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                         .OnDelete((DeleteBehavior)ReferentialAction.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -293,7 +295,7 @@ namespace FinancialApp.Migrations
                     b.HasOne("FinancialApp.Data.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                         .OnDelete((DeleteBehavior)ReferentialAction.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -302,7 +304,7 @@ namespace FinancialApp.Migrations
                     b.HasOne("FinancialApp.Data.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                         .OnDelete((DeleteBehavior)ReferentialAction.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -311,13 +313,13 @@ namespace FinancialApp.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete((DeleteBehavior)ReferentialAction.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FinancialApp.Data.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete((DeleteBehavior)ReferentialAction.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -326,7 +328,7 @@ namespace FinancialApp.Migrations
                     b.HasOne("FinancialApp.Data.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                         .OnDelete((DeleteBehavior)ReferentialAction.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

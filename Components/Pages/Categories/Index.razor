@@ -1,5 +1,7 @@
 ﻿@page "/categories"
 @inject ApplicationDbContext Context
+@rendermode InteractiveServer
+
 
 <h1>Categories</h1>
 
@@ -14,11 +16,12 @@
 }
 else
 {
-    <table class="table">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Título</th>
+                <th>Detalhes</th>
                 <th>Edit</th>
                 <th>Delete</th>
             </tr>
@@ -27,11 +30,14 @@ else
         <tbody>
             @foreach (var category in Categories)
             {
-                <tr>
+                <tr @key="Model">
                     <td>@category.Id</td>
                     <td>@category.Title</td>
+                    <td><a class="btn btn-primary" href="/categories/details/@category.Id">Detalhes</a></td>
                     <td><a class="btn btn-primary" href="/categories/edit/@category.Id">Editar</a></td>
-                    <td class="btn btn-danger" @onclick="() => DeleteCategory(category.Id)">Deletar</td>
+                    <td>
+                        <button class="btn btn-danger" @onclick="@(async() => await DeleteCategory(category.Id))">Delete</button>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -52,7 +58,7 @@ else
 
     public async Task DeleteCategory(int id)
     {
-        Model = await Context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+        Model =  await Context.Categories.FirstOrDefaultAsync(c => c.Id == id);
 
         if (Model == null)
         {
@@ -62,8 +68,15 @@ else
         {
             Context.Categories.Remove(Model);
             await Context.SaveChangesAsync();
+            await OnInitializedAsync();
         }
 
     }
+
+    public async Task EditCategory(int id)
+    {
+        
+    }
+
 
 }
